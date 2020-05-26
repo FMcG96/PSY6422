@@ -1,0 +1,37 @@
+---
+title: "PSY6422 final self-assessment"
+author: "Your Name Here"
+date: "15/05/2020"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+  pdf_document: default
+---
+
+# Marking Criteria
+
+Submits by 12 noon on the 26th of May 2020 in PDF by email to ``t.stafford@shef.ac.uk``
+
+Answers the questions in the headings below, showing evidence of engagement with the course
+
+Note: I expect and hope that all students can get full marks for this assessment. There is no word limit, but short is sweet. I suggest you write between 3 sentences and 3 paragraphs for each.
+
+# Final Self-assessment for PSY6422
+
+## 1. Which topic did I find most useful or interesting? Explain why
+My favourite topic was coding principles for a few reasons. When I started the course looking at a page of code was daunting as it might as well have been looking at another language. This topic in particualr allowed me take a step back and break down code blocks which making it less daunting. 
+Furthermore, I tried to implement these principles in my own code - especially indenting and making approproate comments. Ocasionally I would get frustrated trying to code something and have to stop for a while, when I eventually came back I was grateful that I took the time to properly label my code, which made it a lot easiere to pick up where I left off.  
+
+## 2. Which topic did I find least useful, interesting or most difficult? Explain why
+I found the prospect of making interactive graphs, exciting but very very daunting, so I would have to say that was my least favouirte topic. I have found my progress on this course rather slow, so the topic was largely irrelevent to me. Nonetheless, I appreciate that one day I could be at that point, but I do not have the time or the capabilities to attempt anything of the sort at the moment. 
+
+
+## 3. What topics do I want to learn more about in the future? Explain why
+This ties into question 2. 
+I would like to  be able to make an interactive graph as that is more tangible than a non-interactive graph. During the course I often found myself wondering (particulalry when stuck) that I could make decent visulisations on excell or another program with ease, and on R it was incredibly difficult for the same end product. That being said, I appreciate that wasn't the aim of the project, and these coding skills will be very useful in the future. Therefore, I find myself at odds with interactive graphs as I do not yet have the capbilities to create them, yet I think I would find them very satisfying to produce. Furthermore, my significant other is a programmer and he  good naturedly teases me about being a beginner, I would like to produce a fancy interactive visulisation to prove a point. 
+
+
+## 4. Please share one thing you have read and enjoyed or found useful on the topic of data management and/or visualisation
+
+I appreciate how useful the tidyverse packages is when coding. I used dplyr package a lot during this course, espcially the pipe function “%>%” to combine different functions in R.I also heavilly relied upon the filter() mutate() and arrange() functions when recoding data values in my dataset, without these my graphs would be almost impossible to read.
