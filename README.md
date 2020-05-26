@@ -116,7 +116,7 @@ response options include:
 
 Column 3
 
-Possible response options incldue:
+Possible response options include:
 
 'unknown = missing data'
 
