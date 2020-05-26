@@ -1,7 +1,19 @@
 # PSY6422
 # Investigating the relationship between traits in characters in the Lord of the Rings
 
-This project aims to investigate the realtionship between two traits in the Lord of the Rings data set. Specifically, the project will investigate the relationship between the traits 'race' and 'gender' with the aim to produce three visulisations; one graph for each trait and combined graph including both 'gender' and 'race' data. 
+This project aims to investigate the realtionship between two traits in the Lord of the Rings data set. Specifically, the project will investigate the relationship between the traits 'race' and 'gender' with the aim to produce 3 graphs. 
+
+
+## Data Collection:
+
+The raw data was collected using a web scraper which autonomously collected data from the Lord of the Rings wiki (http://lotr.wikia.com) and the Lord of the Rings uk fan page (http://www.ageofthering.com).
+
+All data was publicly available via github 
+https://github.com/tianyigu/Lord_of_the_ring_project/blob/master/LOTR_code/lotr_demograph_scripy/lotr.csv
+
+For additonal info see link
+https://nycdatascience.com/blog/student-works/journey-to-middle-earth-webscraping-the-lord-of-the-ring/
+
 
 # Variables
 ## Race:
