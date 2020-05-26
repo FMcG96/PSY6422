@@ -1,0 +1,272 @@
+---
+title: "PSY6422 - Data Analysis and Visualisation"
+author: "Fiona McGavin"
+date: "20/05/2020"
+output: html_document
+---
+# Investigating the relationship between traits in characters in the Lord of the Rings.
+  
+## Project aims
+Investigate the realtionship between two traits in the data set and draw conclusions. Specifically, investigate the relationship between the traits 'race' and 'gender'. I aim to produce three visulisations; one visulisation  to best represent each trait and combined visulisation including both 'gender' and 'race' data. 
+  
+## Data origins
+All data was publicly available via github 
+https://github.com/tianyigu/Lord_of_the_ring_project/blob/master/LOTR_code/lotr_demograph_scripy/lotr.csv
+
+The raw data was collected using a web scraper which autonomously collected data from the Lord of the Rings wiki (http://lotr.wikia.com) and the Lord of the Rings uk fan page (http://www.ageofthering.com).
+
+For additonal info see link
+https://nycdatascience.com/blog/student-works/journey-to-middle-earth-webscraping-the-lord-of-the-ring/
+
+## Data preparation
+Many of the characters in the data set were labelled innapropriately - as this project examines only two specific catagories (race and gender) only two catagories were underwent preprocessing steps. 
+
+Please refer to descriptions of figures 1b, 2b & 3 for more details. 
+
+## Raw data
+```{r}
+#load libraries
+
+library(tm)
+library(knitr)
+library(ggimage)
+library(igraph)
+library(ggraph)
+library(dplyr)
+library(forcats)
+library(ggplot2)
+
+#set path
+
+setwd("~/R/R_Data/Data_VisTask/Raw")
+
+#Read data
+
+characters <- read.csv("C:\\Users\\Fiona\\Documents\\R\\R_Data\\Data_VisTask\\Raw\\lotr.csv")
+
+
+```
+
+```{r}
+
+#View data/data summary
+
+colnames(characters)
+
+dim(characters)
+
+head(characters,n=10)
+
+tail(characters,n=10)
+
+summary(characters)
+
+
+```
+
+## View data/data structure
+
+This data set is made up of 911 rows (characters) and consists of nine variables; 'birth', 'gender', 'hair colour', 'height' 'name', 'race', 'realm' and 'marital status'. 
+
+For this project two traits will be examined; race and gender. Other traits/catagories in the data set required a lot of preprocessing (birth & death) before the data is workable, so were not the first choice of variables. Alternatively, some traits/catagories in the data set are not especially meaningful and unliklely to yeild meanigful analysis (hair colour and height) so were not chosen for this project. 
+
+## Figure 1a
+```{r}
+
+#Race breakdown - unfiltered data (Figure 1a)
+
+characters %>%
+  filter(race!="") %>% # filter variable 
+    count(race) %>% #count variable
+      mutate(Percentage=paste0(round(n/sum(n)*100, 2),"%")) %>% # add percentages
+  
+  ggplot(aes(x=factor(2), y=n, fill = race)) +
+  geom_bar(stat="identity", width=1, size=1, color="black") +
+  coord_polar(theta="y") +
+  labs(title="Race breakdown (%)") +
+  theme(plot.title = element_text(hjust = 0.5)) + # create graph - pie chart & add colour
+  
+theme_classic() +
+geom_text(aes(label=Percentage),
+          position=position_stack(vjust = 0.5)) # add theme and labels
+```
+
+
+
+This graph has number of issues that needs to be addressed:
+
+a) There are too many catagories to display in this chart, this needs be reduced to top ten highest percentages
+
+b) There percentages are unreadable as they are overlapping in many instances.
+
+c) The chart has unwanted axis with labels.
+
+d) Ideally the heading should be centralised.
+
+c) Many of the catagories overlap i.e. 'Orc' is equivalent to 'Orcs'. 
+
+d) Unknown data values 
+
+## Figure 1b
+```{r}
+
+#Race breakdown - filtered data (figure 1b)
+
+characters %>%
+  filter(race!="",race!="Unknown",race!="Unknow") %>% # filter variable 
+    count(race) %>% # count variable
+      arrange(desc(n)) %>% # arrange descending order
+        slice(1:12) %>% # reduce number of races shown on pie chart
+  mutate(Percentage=paste0(round(n/sum(n)*100, 2),"%")) %>% # add percentage
+  
+  mutate(race=fct_recode(race, "Hobbits"="Hobbit")) %>% 
+  mutate(race=fct_recode(race, "Dwarves"="Dwarf")) %>%  
+  mutate(race=fct_recode(race, "Dwarves"="Dwarven")) %>%
+  mutate(race=fct_recode(race, "Orcs"="Orc")) %>%  
+  mutate(race=fct_recode(race, "Elves"="Elf")) %>% #recode data - pre-processing step. 
+  
+    ggplot(aes(x="", y=n, fill = race)) +
+    geom_bar(stat="identity", width=1, size=1, color="black") +
+    coord_polar(theta="y") +
+    labs(title="Race breakdown (%)") + # create graph - pie chart
+  
+    theme_classic() +
+    theme(plot.title = element_text(hjust = 0.5),
+        axis.text = element_blank(),
+        axis.line = element_blank(),
+        axis.title = element_blank(),
+        axis.ticks = element_blank())+
+    geom_text(aes(label=Percentage),
+          position=position_stack(vjust = 0.5))+  
+    labs(x = "", fill = "Race") # remove axis and axis labels, format text, assign theme & title legend 
+
+
+```
+
+This graph represents a break down of the most common races featuring in the dataset (the lord of the rings wikki).
+There was a number of preprocessing steps that were undertaken during the construction of this visulisation:
+
+The original data set was aquired via a data scraping method meaning some of the data in the data set needed recoded into more worakable format. For example 'Dwarf' and 'Dwarven' were recoded as 'Dwarves', proir to this step, each of these words would represent 3 seperate catagories and thus inflate the number of 'races' in the data set.Therefore, following the recoding of the data the graph depicts a more accurate representattion of the breakdonw of the most common races within the data set. 
+
+Looking at the graph it is apparant that 'Men' represent majority  characters in data set at around 50%. The smallest catagory is difficult to determine when looking at the graph. Additional changes need to made to this visulisation to ensure the readibilty of the percentage labels (perhaphs placing them around the circumferance).Furthermore, there were simply too many catagories to display on this graph. The data was first arranged in descending order and then sliced to represent only the highest percentages. 
+
+## Figure 2a
+```{r}
+
+#Gender breakdown - unfiltered data (figure 2a)
+
+characters %>%
+  count(gender) %>% # count variable
+    mutate(Percentage=paste0(round(n/sum(n)*100, 2), "%")) %>% # add percentages
+  
+ggplot(aes(x=factor(1), y=n,)) + 
+geom_bar(stat="identity", width=2, size=2, color="black") +
+coord_polar(theta="y") +
+labs(title="Gender Breakdown (%)") + # create graph - pie chart
+  
+theme_classic() +
+geom_text(aes(label=Percentage),
+            position=position_stack(vjust = 0.5)) # add theme and labels
+
+
+
+```
+
+
+This graph has number of issues that needs to be addressed:
+
+a) There is no legend to determine what percetages refer to what gender?
+
+b) There is more than two percentages? There should only be two, to represent male and female?
+
+c) The pie chart has visble  and uncessary axis.
+
+d) Colour would be beneficial as well as a centralised heading.
+
+## Figure 2b
+```{r}
+
+#Gender visulisation - filtered data (figure 2b)
+
+characters %>%
+  filter(gender!= "Unknown", gender!= "Unknow", !gender %in% c("","male","Males", "Most likely male")) %>% # filter gender 'Male' and 'unknown' & group varaibles
+    count(gender) %>% # count variable
+      mutate(Percentage=paste0(round(n/sum(n)*100, 2), "%")) %>% # add percentages
+
+  ggplot(aes(x=factor(2), y=n, fill=gender)) + 
+  geom_bar(stat="identity", width=1, size=1, color="black") +
+  coord_polar(theta="y") + # create graph - pie chart
+  
+labs(title="Gender Breakdown (%)") +
+theme_classic() +
+theme(plot.title = element_text(hjust = 0.5), 
+      axis.text = element_blank(),
+      axis.line = element_blank(),
+      axis.title = element_blank(),
+      axis.ticks = element_blank())+ # remove axis and axis labels, format text & assign theme
+geom_text(aes(label=Percentage),
+          position=position_stack(vjust = 0.5))+
+labs(x = "", fill = "Gender") # capatalise legend title.
+  
+```
+
+This graph describes the gender breakdown of the characters in the data set, specifically that 80% of the characters in the data set can be described as male. 
+
+In order to create this graph a number of prepropcessing steps were taken. First and foremorst, the original data set was aquired via a data scraping method meaning some of the data in the data set needed recoded into more worakable format. For example 'males', 'Males' and 'Most likely male' were filtered and group under the catagory 'Male'.Prior to this step the number of gender was inflated artificially. This step was uneessary for females as there  were relatively very few of them in the data set. 
+
+Adressing issues with the previous graph, the unwanted axis and axis heading were hidden using a extra bit of code.
+Furthermore, the gender catagories are now dilineated by colour as shown via the legend. 
+
+## Figure 3
+````{r}
+
+#Race and Gender combined  bar chart (figure 3)
+
+characters %>%
+  filter(race!="") %>%
+    filter(gender!= "Unknown", gender!= "Unknow", !gender %in% c("","male","Males", "Most likely male")) %>% #         filter gender 'Male' & group varaibles
+      count(race, gender) %>% # count variables
+        arrange(desc(n)) %>% # arrange descending order
+          slice(1:17) %>% # slice variables
+  
+  
+  mutate(race=fct_recode(race, "Hobbits"="Hobbit")) %>%
+  mutate(race=fct_recode(race, "Dwarves"="Dwarf")) %>%  
+  mutate(race=fct_recode(race, "Dwarves"="Dwarven")) %>%
+  mutate(race=fct_recode(race, "Orcs"="Orc")) %>%  
+  mutate(race=fct_recode(race, "Elves"="Elf")) %>% # recode races
+  
+  
+  ggplot(aes(x=reorder(race, -n), y=n)) +
+  geom_bar(stat="identity", aes(fill=gender), width=1, size=1, color="black") +
+  geom_text(aes(label=n, group=gender), position=position_stack(vjust=0.9)) +
+  labs(x="Race", y="Amount", title="Race & Gender Breakdown") + # create graph - bar chart
+  
+  theme_classic() +
+  labs(x = "", font.lab = 2, fill = "Race") +
+  theme(plot.title = element_text(hjust = 0.6)) # add theme & format text
+
+```
+
+
+This graph represent the gender breakdonw by race in the data set. The graph demonstartes that there is greater number of female characters in more common races compared to less common races. Futhermore all races have a signficantly greater percentage of males compared to females.
+
+Arguably, this visulisation suggests that  males represent the default gender catgorisation in this piece of literature. It is worth noting that the number of female antagonists (orcs, goblins, trolls, dragons etc) numbers very few. On the other hand, Males are evenly distributed as protagonists and antagonists in this data set.
+
+This visulisation has an error, which I wad unable to resolve. The catagories 'Elves' and 'Hobbits' have 4 sets of numbers, unlike other catagories. Extracting data from the graph is made more difficult as a result. Going forward, this is an issue I would like to address.  
+
+It is hardly surpsing that Dwarves have are entirely classified as male, this is a common trope in the fantasty genre.In lord of the ring lore, female dwarves upon marriage join their husbands families, and as such are not featured in geaniologies [http://tolkiengateway.net/wiki/Dwarf-women] [https://lotr.fandom.com/wiki/Dwarves].
+
+
+# Summary
+
+Whislt these graphs highlight some interesting trends, this project has looked at only two traits out of multiple that exist in the data set. Going forward, analysis of additional traits may alter the interpretation of this data and provide some context to the trends observed. Furthermore, whilst interesting, this data is largely superficial. To make this experimental question more meaningful, a sentiment analysis surrounding the language and terminolgy used to describe different races and genders may yeild more meaningful conclusion. Alternatively, analysising the dialogue of specific characters may provide a greater insight into specific traits affiliated with particular genders and races within the book series. 
+
+# Final Comments
+
+This project allowed me to put basiccoding skills into practice using data which interested me. I can now produce reasonable graphs and manipulate data to a small extent, which is something I was unable to do before. 
+
+This project threw many challenges at me, which I was able to resolve for the most part. That being said, the readabilty of my graphs is poor especially in figure 1b. This is something I hope to build upon in future work. Furthermore, I particularly struggled adding the finishing touches to my graphs, including changing text fonts, chaging positions of headings/label and adding colours/themes. In future work, I would like to focus on this especially. 
+
+
+
